@@ -1,3 +1,8 @@
+# Mine:
+*.zip
+vista_traces/*
+
+# Original
 log/
 logs/
 save/
