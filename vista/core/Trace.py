@@ -56,6 +56,8 @@ class Trace:
         self._config: Dict = misc.merge_dict(trace_config, self.DEFAULT_CONFIG)
 
         # Get function representation of state information
+        # Read speed and IMU data from dataset & do interpolation to get continuous function
+        # Curvature is computed as yaw rate / speed
         self._f_speed, self._f_curvature = self._get_states_func()
 
         # Divide trace to good segments based on video labels and timestamps

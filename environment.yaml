@@ -207,7 +207,7 @@ dependencies:
     - pysocks=1.7.1
     - python=3.9.6
     - python-dateutil=2.8.2
-    - python-flatbuffers=2.0
+    - python-flatbuffers=2.0  
     - python_abi=3.9
     - pytorch=1.8.1
     - pywavelets=1.1.1

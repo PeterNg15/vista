@@ -28,6 +28,7 @@ class World:
     def __init__(
         self, trace_paths: List[str],
         trace_config: Optional[Dict] = dict()) -> None:
+        
         # A list of traces that define the world
         self._traces: List[Trace] = [
             Trace(trace_path, trace_config) for trace_path in trace_paths
