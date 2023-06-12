@@ -65,7 +65,7 @@ class Trace:
             self._trace_path, self._config['master_sensor'])
         self._labels: LabelSearch = LabelSearch(*self._config['labels'])
 
-        good_frames, good_timestamps = self._divide_to_good_segments()
+        good_frames, good_timestamps = self._divide_to_good_segments() # 1627319965.962718
         self._good_frames: Dict[str, List[int]] = good_frames
         self._good_timestamps: Dict[str, List[float]] = good_timestamps
 

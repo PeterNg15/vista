@@ -7,9 +7,151 @@ from vista.utils import transform
 from vista.entities.agents.Dynamics import tireangle2curvature
 import matplotlib.pyplot as plt
 
+import copy
+from matplotlib import cm
+from shapely.geometry import box as Box
+from shapely import affinity
 
-trace_paths = ["./vista_traces/20210726-131912_lexus_devens_center_reverse/"]
+from vista.entities.sensors.camera_utils.ViewSynthesis import DepthModes
+from vista.utils import logging
+from vista.tasks import MultiAgentBase
+from vista.utils import transform
 
+# trace_paths = ["./vista_traces/20210726-131912_lexus_devens_center_reverse/"]
+trace_paths = ["./vista_traces/2021.08.17.16.57.11_veh-08_01200_01636/"]
+mesh_path = "./mesh/"
+
+def follow_human_trajectory(agent):
+    action = np.array([
+        agent.trace.f_curvature(agent.timestamp),
+        agent.trace.f_speed(agent.timestamp)
+    ])
+    return action
+
+world = vista.World(trace_paths, trace_config={'road_width': 4})
+car = world.spawn_agent(
+    config={
+        'length': 5.,
+        'width': 2.,
+        'wheel_base': 2.78,
+        'steering_ratio': 14.7,
+        'lookahead_road': True
+    })
+
+camera = car.spawn_camera(config={
+    'size': (200, 320),
+})
+display = vista.Display(world)
+
+world.reset()
+display.reset()
+
+while not car.done:
+    action = follow_human_trajectory(car)
+    car.step_dynamics(action)
+    car.step_sensors()
+
+    vis_img = display.render()
+    cv2.imshow('Visualize RGB', vis_img[:, :, ::-1])
+    cv2.waitKey(20)
+
+
+
+
+"""
+trace_config = dict(
+    road_width=4,
+    reset_mode='default',
+    master_sensor='camera_front',
+)
+car_config = dict(
+    length=5.,
+    width=2.,
+    wheel_base=2.78,
+    steering_ratio=14.7,
+)
+examples_path = os.path.dirname(os.path.realpath(__file__))
+sensors_config = [
+    dict(
+        type='camera',
+        # camera params
+        name='camera_front',
+        rig_path=os.path.join(examples_path, "params.xml"),
+        size=(200, 320),
+        # rendering params
+        depth_mode=DepthModes.FIXED_PLANE,
+        use_lighting=False,
+    )
+]
+task_config = dict(n_agents=2,
+                    mesh_dir=mesh_path,
+                    init_dist_range=[6., 6.],
+                    init_lat_noise_range=[0., 0.])
+display_config = dict(road_buffer_size=1000, )
+
+ego_car_config = copy.deepcopy(car_config)
+ego_car_config['lookahead_road'] = True
+env = MultiAgentBase(trace_paths=trace_paths,
+                        trace_config=trace_config,
+                        car_configs=[ego_car_config, car_config],
+                        sensors_configs=[sensors_config, []],
+                        task_config=task_config,
+                        logging_level='DEBUG')
+display = vista.Display(env.world, display_config=display_config)
+
+# Run
+env.reset()
+display.reset()
+done = False
+while not done:
+    actions = generate_human_actions(env.world)
+    observations, rewards, dones, infos = env.step(actions)
+    done = np.any(list(dones.values()))
+
+    img = display.render()
+    cv2.imshow("test", img[:, :, ::-1])
+    cv2.waitKey(20)
+"""
+
+
+"""
+def follow_human_trajectory(agent):
+    action = np.array([
+        agent.trace.f_curvature(agent.timestamp),
+        agent.trace.f_speed(agent.timestamp)
+    ])
+    return action
+
+world = vista.World(trace_paths, trace_config={'road_width': 4})
+car = world.spawn_agent(
+    config={
+        'length': 5.,
+        'width': 2.,
+        'wheel_base': 2.78,
+        'steering_ratio': 14.7,
+        'lookahead_road': True
+    })
+
+camera = car.spawn_camera(config={
+    'size': (200, 320),
+})
+display = vista.Display(world)
+
+world.reset()
+display.reset()
+
+while not car.done:
+    action = follow_human_trajectory(car)
+    car.step_dynamics(action)
+    car.step_sensors()
+
+    vis_img = display.render()
+    cv2.imshow('Visualize RGB', vis_img[:, :, ::-1])
+    cv2.waitKey(20)
+"""
+
+
+"""
 frames = []
 cap = cv2.VideoCapture('./vista_traces/20210726-131912_lexus_devens_center_reverse/camera_front.avi')
 while True:
@@ -93,4 +235,5 @@ while not car.done:
 
     cv2.imshow('Visualize event data', bev_and_frame)
     cv2.waitKey(1)
+"""
 

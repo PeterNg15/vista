@@ -1,6 +1,7 @@
 # Mine:
 *.zip
 vista_traces/*
+nuplan/*
 
 # Original
 log/

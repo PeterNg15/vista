@@ -8,7 +8,6 @@ from matplotlib import cm, colors, patches
 
 from shapely.geometry import LineString
 from descartes import PolygonPatch
-import cv2
 
 from . import World
 from ..entities.agents.Dynamics import StateDynamics, update_with_perfect_controller, \
@@ -575,5 +574,6 @@ def fit_img_to_ax(fig: plt.Figure, ax: plt.Axes,
         pad_img = np.zeros((img_h, int(d_img_w // 2), 3), dtype=np.uint8)
         new_img = np.concatenate([pad_img, img, pad_img], axis=1)
     else:
+        # return img
         raise ValueError('Something weird happened.')
     return new_img
