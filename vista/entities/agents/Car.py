@@ -329,9 +329,9 @@ class Car(Entity):
         # Parse action
         action = np.array(action).reshape(-1)
         assert action.shape[0] == 2
-        desired_curvature, desired_speed = action
+        desired_curvature, desired_speed = action # -7151814058.411914, 0.0000001
         desired_tire_angle = curvature2tireangle(desired_curvature,
-                                                 self.wheel_base)
+                                                 self.wheel_base) # -1.5707963267446
 
         # Run low-level controller and step vehicle dynamics
         # TODO: non-perfect low-level controller
@@ -340,11 +340,11 @@ class Car(Entity):
         update_with_perfect_controller(desired_state, dt, self._ego_dynamics)
 
         # Update based on vehicle dynamics feedback
-        self._tire_angle = self.ego_dynamics.steering
-        self._speed = self.ego_dynamics.speed
-        self._curvature = tireangle2curvature(self.tire_angle, self.wheel_base)
+        self._tire_angle = self.ego_dynamics.steering #-0.75
+        self._speed = self.ego_dynamics.speed # 0.0000001
+        self._curvature = tireangle2curvature(self.tire_angle, self.wheel_base) # -0.33510664026765197
         self._steering = curvature2steering(self.curvature, self.wheel_base,
-                                            self.steering_ratio)
+                                            self.steering_ratio) # -631.6859691317326
 
         # Update human (reference) dynamics for assoication with the trace / dataset
         human = self.human_dynamics.copy()
@@ -352,6 +352,9 @@ class Car(Entity):
                             dynamics=deque([None, None], maxlen=2),
                             timestamp=deque([None, None], maxlen=2),
                             index=deque([None, None], maxlen=2))
+        # print(top2_closest)
+        # print(self.frame_index)
+        
         index = self.frame_index
         ts = self.trace.get_master_timestamp(self.segment_index, index)
         while True:

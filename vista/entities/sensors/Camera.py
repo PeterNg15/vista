@@ -96,7 +96,7 @@ class Camera(BaseSensor):
             for camera_name in multi_sensor.camera_names:
                 # get video stream
                 video_path = os.path.join(self.parent.trace.trace_path,
-                                          camera_name + '.avi')
+                                          camera_name + '.mp4')
                 cam_h, cam_w = (trace_camera.get_height(),
                                 trace_camera.get_width())
                 stream = FFReader(video_path,

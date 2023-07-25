@@ -119,7 +119,7 @@ class StateDynamics:
             [self._x, self._y, self._yaw, self._steering, self._speed])
         solver = ode_solve.RK45(_ode_func, 0., z_0, dt)
         steps = 0
-        while solver.status is 'running' and steps <= max_steps:
+        while solver.status == 'running' and steps <= max_steps:
             solver.step()
             steps += 1
         if (dt - solver.t) < 0:
@@ -131,7 +131,6 @@ class StateDynamics:
         # Clip by value bounds
         self._steering = np.clip(self._steering, *self._steering_bound)
         self._speed = np.clip(self._speed, *self._speed_bound)
-
         return self.numpy()
 
     def numpy(self) -> np.ndarray:

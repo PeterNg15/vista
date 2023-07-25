@@ -18,25 +18,49 @@ from vista.tasks import MultiAgentBase
 from vista.utils import transform
 
 # trace_paths = ["./vista_traces/20210726-131912_lexus_devens_center_reverse/"]
-trace_paths = ["./vista_traces/2021.08.17.16.57.11_veh-08_01200_01636/"]
+# trace_paths = ["./vista_traces/20210726-131322_lexus_devens_center/"]
+# trace_paths = ["./vista_traces/2021.08.17.16.57.11_veh-08_01200_01636/"]
+# trace_paths = ["vista_traces/2021.08.17.17.17.01_veh-45_02314_02798/"]
+trace_paths = ["vista_traces/2021.08.17.18.54.02_veh-45_00665_01065/"]
 mesh_path = "./mesh/"
 
 def follow_human_trajectory(agent):
-    action = np.array([
+    action = np.array([ 
         agent.trace.f_curvature(agent.timestamp),
         agent.trace.f_speed(agent.timestamp)
     ])
     return action
 
+# world = vista.World(trace_paths, trace_config={'road_width': 4, 'max_timestamp_diff_across_frames':9999999999999})
+
 world = vista.World(trace_paths, trace_config={'road_width': 4})
 car = world.spawn_agent(
     config={
-        'length': 5.,
-        'width': 2.,
-        'wheel_base': 2.78,
-        'steering_ratio': 14.7,
+        'length': 4.084,
+        'width': 1.730,
+        'wheel_base': 2.58800,
+        'steering_ratio': 15.2,
         'lookahead_road': True
     })
+
+
+# car = world.spawn_agent(
+#         config={
+#             'length': 5.,
+#             'width': 2.,
+#             'wheel_base': 2.78,
+#             'steering_ratio': 14.7,
+#             'lookahead_road': True
+#         })
+
+# car = world.spawn_agent(
+#     config={
+#         'length': 4.084,
+#         'width': 1.730,
+#         'wheel_base': 0.8,
+#         'steering_ratio': 15.2,
+#         'lookahead_road': True
+#     })
 
 camera = car.spawn_camera(config={
     'size': (200, 320),
@@ -48,14 +72,16 @@ display.reset()
 
 while not car.done:
     action = follow_human_trajectory(car)
-    car.step_dynamics(action)
+    car.step_dynamics(action, dt=1/10)
+    # print(action)
+    # car.step_dataset()
     car.step_sensors()
 
     vis_img = display.render()
     cv2.imshow('Visualize RGB', vis_img[:, :, ::-1])
-    cv2.waitKey(20)
+    cv2.waitKey(5)
 
-
+0
 
 
 """
@@ -236,4 +262,3 @@ while not car.done:
     cv2.imshow('Visualize event data', bev_and_frame)
     cv2.waitKey(1)
 """
-

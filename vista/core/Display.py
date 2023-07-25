@@ -197,10 +197,16 @@ class Display:
         """
         # Update road (in global coordinate)
         exceed_end = False
+        # print("hi!", self._road_frame_idcs[-1], self.ref_agent.frame_index, (
+        #         self.ref_agent.frame_index +
+        #         self._config['road_buffer_size'] / 2.), self._config['road_buffer_size'])
+        
+        # print("ref_agent", self.ref_agent)
         while self._road_frame_idcs[-1] < (
                 self.ref_agent.frame_index +
                 self._config['road_buffer_size'] / 2.) and not exceed_end:
             exceed_end, ts = self._get_timestamp(self._road_frame_idcs[-1])
+            # print("!execute here!", self._road_frame_idcs[-1], ts)
             self._road_frame_idcs.append(self._road_frame_idcs[-1] + 1)
             exceed_end, next_ts = self._get_timestamp(
                 self._road_frame_idcs[-1])

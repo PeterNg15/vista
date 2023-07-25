@@ -56,8 +56,6 @@ class Trace:
         self._config: Dict = misc.merge_dict(trace_config, self.DEFAULT_CONFIG)
 
         # Get function representation of state information
-        # Read speed and IMU data from dataset & do interpolation to get continuous function
-        # Curvature is computed as yaw rate / speed
         self._f_speed, self._f_curvature = self._get_states_func()
 
         # Divide trace to good segments based on video labels and timestamps
@@ -65,7 +63,7 @@ class Trace:
             self._trace_path, self._config['master_sensor'])
         self._labels: LabelSearch = LabelSearch(*self._config['labels'])
 
-        good_frames, good_timestamps = self._divide_to_good_segments() # 1627319965.962718
+        good_frames, good_timestamps = self._divide_to_good_segments()
         self._good_frames: Dict[str, List[int]] = good_frames
         self._good_timestamps: Dict[str, List[float]] = good_timestamps
 
@@ -232,7 +230,7 @@ class Trace:
             good_labeled_timestamps = np.array(
                 self._multi_sensor.get_master_timestamps())
 
-        good_speed_inds = self.f_speed(good_labeled_timestamps) > min_speed
+        good_speed_inds = self.f_speed(good_labeled_timestamps) > 0 # min_speed
         good_labeled_timestamps = good_labeled_timestamps[good_speed_inds]
 
         # Filter by end-of-trace and time difference across consecutive frames
@@ -292,7 +290,7 @@ class Trace:
         timestamps = imu[:, 0]
         yaw_rate = imu[:, 6]
         curvature = yaw_rate / np.maximum(f_speed(timestamps), 1e-10)
-        good_curvature_inds = np.abs(curvature) < 1 / 3.
+        good_curvature_inds = np.abs(curvature) < 1 / 3. # np.abs(curvature) >= 0
         f_curvature = interp1d(timestamps[good_curvature_inds],
                                curvature[good_curvature_inds],
                                fill_value='extrapolate')
